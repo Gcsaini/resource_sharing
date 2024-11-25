@@ -87,7 +87,7 @@ Prerequisites
 -- Git: For version control
 
 #Installation
--- 1.Clone the Repository -> git clone https://github.com/Gcsaini/resource_sharing/new/main?filename=README.md
+-- 1.Clone the Repository -> git clone https://github.com/Gcsaini/resource_sharing.git
 -- 2.Install Dependencies. run command ->npm install
 -- 3.Configure Environment Variables.put your database details like dbname,username, pass and host etc
 -- 4.Put the db details in config/config.json file.Run the command for migration it will create the tables into database -> npx sequelize-cli db:migrate
