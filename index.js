@@ -1,5 +1,6 @@
 import express from "express";
 import userRoutes from "./routes/user.js";
+import resourcesRoutes from "./routes/resource.js";
 import path, { dirname } from "path";
 import { fileURLToPath } from "url";
 import cors from "cors";
@@ -18,7 +19,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
-app.use("/api", userRoutes);
+app.use("/user", userRoutes);
+app.use("/resources", resourcesRoutes);
+app.all("*", (req, res) => {
+  res.status(404).json({ message: "URL not found" });
+});
 
 app.get("/", (req, res) => {
   res.status(200).send({

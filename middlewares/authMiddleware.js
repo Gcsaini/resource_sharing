@@ -1,10 +1,9 @@
 import Jwt from "jsonwebtoken";
-import User from "../models/User.js";
+import User from "../models/users.js";
 
 export const isAuth = async (req, res, next) => {
   let token;
 
-  // Check if authorization header contains a Bearer token
   if (
     req.headers.authorization &&
     req.headers.authorization.startsWith("Bearer")
@@ -15,12 +14,12 @@ export const isAuth = async (req, res, next) => {
       const decoded = Jwt.verify(token, process.env.JWT_SECRET);
 
       const user = await User.findByPk(decoded.userId, {
-        attributes: ["name", "email"],
+        attributes: ["id", "name", "email"],
       });
 
       if (user) {
         req.user = user;
-        return next();
+        next();
       } else {
         return res.status(403).json({ message: "User not authorized" });
       }
