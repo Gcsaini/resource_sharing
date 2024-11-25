@@ -1,0 +1,88 @@
+{
+	"info": {
+		"_postman_id": "9d469be6-107d-4173-930d-548efc8557cb",
+		"name": "resources",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "27116616"
+	},
+	"item": [
+		{
+			"name": "resources",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTczMjU1MzQ5NSwiZXhwIjoxNzMyNjM5ODk1fQ.g-69jr0O3fjEw1D29jPUAeGxOI1tEhZi1P8Rx6Ulogw"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:4000/resources"
+			},
+			"response": []
+		},
+		{
+			"name": "resources",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTczMjU1MzQ5NSwiZXhwIjoxNzMyNjM5ODk1fQ.g-69jr0O3fjEw1D29jPUAeGxOI1tEhZi1P8Rx6Ulogw"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"resource_url\":\"https://mail.google.com/mail/inbox/gcs\",\r\n    \"expiration_time\":\"2024-11-28T17:00:00Z\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:4000/resources"
+			},
+			"response": []
+		},
+		{
+			"name": "resource",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTczMjU1MzQ5NSwiZXhwIjoxNzMyNjM5ODk1fQ.g-69jr0O3fjEw1D29jPUAeGxOI1tEhZi1P8Rx6Ulogw"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:4000/resources/3"
+			},
+			"response": []
+		},
+		{
+			"name": "resources",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTczMjU1MzQ5NSwiZXhwIjoxNzMyNjM5ODk1fQ.g-69jr0O3fjEw1D29jPUAeGxOI1tEhZi1P8Rx6Ulogw"
+					}
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": "http://localhost:4000/resources/1"
+			},
+			"response": []
+		},
+		{
+			"name": "share",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:4000/resources/share/0737d24a-3540-4cfa-bd51-73bf0673550"
+			},
+			"response": []
+		}
+	]
+}
