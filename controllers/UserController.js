@@ -1,7 +1,7 @@
 import { generateToken } from "../helpers/generate.js";
 import User from "../models/users.js";
 import Joi from "joi";
-export const register = async (req, res) => {
+export const register = async (req, res, next) => {
   const schema = Joi.object({
     name: Joi.string().min(3).max(50).required().messages({
       "string.empty": "Name is required",
@@ -27,11 +27,19 @@ export const register = async (req, res) => {
     const user = await User.findOne({ where: { email } });
 
     if (user) {
-      return res
-        .status(401)
-        .json({ message: "Account is already exists", data: {} });
+      const error = new Error("Account is already exists");
+      error.statusCode = 404;
+      return next(error);
     }
     const newuser = await User.create({ name, email });
+
+    if (!newuser) {
+      const error = new Error(
+        "Failed to create user please try again after some time."
+      );
+      error.statusCode = 500;
+      return next(error);
+    }
 
     res.status(201).json({
       message: "User registered successfully! You may login now.",
@@ -41,11 +49,11 @@ export const register = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    next(error);
   }
 };
 
-export const login = async (req, res) => {
+export const login = async (req, res, next) => {
   const schema = Joi.object({
     email: Joi.string().email().required().messages({
       "string.empty": "Email is required",
@@ -65,7 +73,9 @@ export const login = async (req, res) => {
     const user = await User.findOne({ where: { email } });
 
     if (!user) {
-      return res.status(401).json({ error: "Account dose not exists" });
+      const error = new Error("Account dose not exists.");
+      error.statusCode = 401;
+      return next(error);
     }
 
     const token = generateToken(user.id);
@@ -73,6 +83,6 @@ export const login = async (req, res) => {
       .status(200)
       .json({ message: "Login successful", data: { token: token } });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    next(error);
   }
 };

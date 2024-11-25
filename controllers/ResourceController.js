@@ -2,40 +2,28 @@ import Resource from "../models/resource.js";
 import validator from "validator";
 import { v4 as uuidv4 } from "uuid";
 
-export const createResource = async (req, res) => {
+export const createResource = async (req, res, next) => {
   try {
     const { resource_url, expiration_time } = req.body;
     if (!resource_url) {
-      return res.status(400).json({
-        message: "resource_url is required",
-        data: {},
-      });
+      return next(new Error("Resource Url is required"));
     }
     if (!expiration_time) {
-      return res.status(400).json({
-        message: "Expiration_time is required",
-        data: {},
-      });
+      return next(new Error("Expiration time is required"));
     }
     const userId = req.user.id;
     const access_token = uuidv4();
     const expirationDate = new Date(expiration_time);
 
     if (!validator.isURL(resource_url)) {
-      return res
-        .status(400)
-        .json({ message: "Invalid resource URL format", data: {} });
+      return next(new Error("Invalid resource URL format"));
     }
 
     if (isNaN(expirationDate.getTime())) {
-      return res
-        .status(400)
-        .json({ message: "Invalid expiration time format", data: {} });
+      return next(new Error("Invalid expiration time format"));
     }
     if (expirationDate <= new Date()) {
-      return res
-        .status(400)
-        .json({ message: "Expiration time must be in the future", data: {} });
+      return next(new Error("Expiration time must be in the future"));
     }
 
     const resource = await Resource.create({
@@ -50,14 +38,15 @@ export const createResource = async (req, res) => {
       data: {
         resource: resource.resource_url,
         expiration_time: resource.expiration_time,
+        sharing_url: `${process.env.BASE_URL}${access_token}`,
       },
     });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    next(error);
   }
 };
 
-export const getResources = async (req, res) => {
+export const getResources = async (req, res, next) => {
   try {
     const { status } = req.query;
     const userId = req.user.id;
@@ -73,19 +62,17 @@ export const getResources = async (req, res) => {
       .status(200)
       .json({ message: "Fetched successfully", data: { resources } });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    next(error);
   }
 };
 
-export const getResource = async (req, res) => {
+export const getResource = async (req, res, next) => {
   try {
     const { id } = req.params;
     const resource = await Resource.findByPk(id);
 
     if (!resource || resource.is_expired) {
-      return res
-        .status(404)
-        .json({ message: "Resource not found or expired", status: false });
+      return next(new Error("Resource not found or expired"));
     }
 
     res.status(200).json({
@@ -94,11 +81,11 @@ export const getResource = async (req, res) => {
       status: true,
     });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    next(error);
   }
 };
 
-export const deleteResource = async (req, res) => {
+export const deleteResource = async (req, res, next) => {
   try {
     const resourceId = req.params.id;
     const userId = req.user.id;
@@ -106,15 +93,11 @@ export const deleteResource = async (req, res) => {
     const resource = await Resource.findByPk(resourceId);
 
     if (!resource) {
-      return res.status(404).json({ error: "Resource not found" });
+      return next(new Error("Resource not found"));
     }
 
     if (resource.user_id !== userId) {
-      return res.status(403).json({
-        message: "Unauthorized to delete this resource",
-        data: {},
-        status: false,
-      });
+      return next(new Error("Unauthorized resource deletion or access."));
     }
 
     await resource.destroy();
@@ -125,7 +108,16 @@ export const deleteResource = async (req, res) => {
       status: true,
     });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Failed to delete resource" });
+    next(error);
   }
+};
+
+export const getResourceByToken = async (req, res, next) => {
+  const { resource } = req;
+
+  res.status(200).json({
+    message: "Resource accessed successfully",
+    resource_url: resource.resource_url,
+    status: true,
+  });
 };

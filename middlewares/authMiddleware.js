@@ -21,14 +21,20 @@ export const isAuth = async (req, res, next) => {
         req.user = user;
         next();
       } else {
-        return res.status(403).json({ message: "User not authorized" });
+        return res
+          .status(403)
+          .json({ message: "User not authorized", status: false });
       }
     } catch (error) {
-      return res.status(401).json({ message: "Token validation failed" });
+      return res
+        .status(401)
+        .json({ message: "Token validation failed", status: false });
     }
   }
 
   if (!token) {
-    return res.status(401).json({ message: "Not authorized, token not found" });
+    return res
+      .status(401)
+      .json({ message: "Not authorized, token not found", status: false });
   }
 };
